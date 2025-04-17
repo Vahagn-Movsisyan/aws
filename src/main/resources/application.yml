@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: awss3-service
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+aws:
+  s3:
+    bucket: media-bucket
+  cloudWatch:
+    log:
+      group:
+        name: media-log-group
+      stream:
+        name: media-log-stream
+  region: us-east-1
+  access-key: LKIAQAAAAAAAPLOCPSOX
+  secret-key: T6uxXv9Hq/El/jeFVtz7sN3IVSueQ+4p4LWEl6d+
+  endpoint: http://localhost:4566
