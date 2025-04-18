@@ -1,4 +1,4 @@
-package org.example.awss3service.config;
+package org.example.aws.config;
 
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,9 +8,11 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @Configuration
-public class CloudWatchConfig {
+public class AWSServicesConfig {
 
 	@Value("${aws.region}")
 	private String region;
@@ -24,10 +26,32 @@ public class CloudWatchConfig {
 	@Value("${aws.endpoint}")
 	private String endpoint;
 
+
+	@Bean
+	public S3Client s3Client() {
+		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+		return S3Client.builder()
+				.region(Region.of(region))
+				.credentialsProvider(StaticCredentialsProvider.create(credentials))
+				.endpointOverride(URI.create(endpoint))
+				.forcePathStyle(true)
+				.build();
+	}
+
 	@Bean
 	public CloudWatchLogsClient cloudWatchLogsClient() {
 		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 		return CloudWatchLogsClient.builder()
+				.region(Region.of(region))
+				.credentialsProvider(StaticCredentialsProvider.create(credentials))
+				.endpointOverride(URI.create(endpoint))
+				.build();
+	}
+
+	@Bean
+	public DynamoDbClient dynamoDbClient() {
+		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+		return DynamoDbClient.builder()
 				.region(Region.of(region))
 				.credentialsProvider(StaticCredentialsProvider.create(credentials))
 				.endpointOverride(URI.create(endpoint))

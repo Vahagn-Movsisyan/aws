@@ -1,8 +1,8 @@
-package org.example.awss3service.endpoint;
+package org.example.aws.controller;
 
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.example.awss3service.service.S3Service;
+import org.example.aws.service.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +24,8 @@ public class FileController {
 		return ResponseEntity.ok(s3Service.uploadFile(file));
 	}
 
-	@GetMapping("/download/{fileName}")
-	public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) {
-		return ResponseEntity.ok(s3Service.downloadFile(fileName));
+	@GetMapping("/download/{key}")
+	public ResponseEntity<byte[]> downloadFile(@PathVariable String key) {
+		return ResponseEntity.ok(s3Service.downloadFile(key));
 	}
 }

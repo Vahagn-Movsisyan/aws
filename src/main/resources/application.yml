@@ -14,7 +14,9 @@ aws:
         name: media-log-group
       stream:
         name: media-log-stream
+  dynamoDB:
+    table-name: file_metadata
   region: us-east-1
-  access-key: LKIAQAAAAAAAPLOCPSOX
-  secret-key: T6uxXv9Hq/El/jeFVtz7sN3IVSueQ+4p4LWEl6d+
+  access-key: LKIAQAAAAAAABZEXGME3
+  secret-key: eNBA3P5SND7gTa+gGdLbVS6VnRPy/24dQx9DW4dX
   endpoint: http://localhost:4566

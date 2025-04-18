@@ -1,4 +1,4 @@
-package org.example.awss3service.service;
+package org.example.aws.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +30,12 @@ public class CloudWatchLoggerService {
 		try {
 			cloudWatchLogsClient.createLogGroup(CreateLogGroupRequest.builder().logGroupName(logGroupName).build());
 		} catch (Exception e) {
-			log("Failed to create log group: " + e.getMessage());
+
 		}
 		try {
 			cloudWatchLogsClient.createLogStream(CreateLogStreamRequest.builder().logStreamName(logStreamName).build());
 		} catch (Exception e) {
-			log("Failed to create log stream: " + e.getMessage());
+
 		}
 	}
 
