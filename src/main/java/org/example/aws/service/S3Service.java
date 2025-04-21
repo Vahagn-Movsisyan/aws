@@ -1,10 +1,11 @@
 package org.example.aws.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.example.aws.dao.FileMetadataServiceDAO;
 import org.example.aws.model.FileMetadata;
 import org.example.aws.utils.BuilderUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +20,13 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @RequiredArgsConstructor
 public class S3Service {
 
-	private final S3Client s3Client;
-	private final FileMetadataServiceDAO fileMetadataServiceDAO;
-	private final CloudWatchLoggerService cloudWatchLoggerService;
-
 	@Value("${aws.s3.bucket}")
 	private String bucketName;
+
+	private final S3Client s3Client;
+	private final ObjectMapper objectMapper;
+	private final CloudWatchLoggerService cloudWatchLoggerService;
+	private final SnsEventPublisherService snsEventPublisherService;
 
 	public String uploadFile(MultipartFile file) throws IOException {
 		UUID uuid = UUID.randomUUID();
@@ -42,8 +44,8 @@ public class S3Service {
 		cloudWatchLoggerService.log(String.format("Uploaded file with: %s key", key));
 
 		FileMetadata fileMetadata = BuilderUtils.buildFileMetadata(UUID.randomUUID().toString(), file.getOriginalFilename(), key, file.getContentType(), file.getSize(), Instant.now().toString());
-		fileMetadataServiceDAO.saveFileMetadata(fileMetadata);
 
+		publishEvent(fileMetadata);
 		cloudWatchLoggerService.log(String.format("Uploaded file with: %s key and size %s", key, file.getSize()));
 
 		return getFileUrl(key);
@@ -55,6 +57,12 @@ public class S3Service {
 				.bucket(bucketName)
 				.key(key)
 				.build()).asByteArray();
+	}
+
+	private void publishEvent(FileMetadata fileMetadata) throws JsonProcessingException {
+		String fileMetadataJson = objectMapper.writeValueAsString(fileMetadata);
+		cloudWatchLoggerService.log(String.format("Publishing file metadata: %s", fileMetadataJson));
+		snsEventPublisherService.publish(fileMetadataJson);
 	}
 
 	private String getFileUrl(String key) {

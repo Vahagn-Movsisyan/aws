@@ -1,6 +1,5 @@
 package org.example.aws.dao;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
-import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -31,24 +29,6 @@ public class FileMetadataServiceDAO {
 
 	private final DynamoDbClient dynamoDbClient;
 	private final CloudWatchLoggerService cloudWatchLoggerService;
-
-	public void saveFileMetadata(FileMetadata fileMetadata) {
-		Map<String, AttributeValue> item = new HashMap<>();
-
-		item.put(FILE_ID, AttributeValue.fromS(fileMetadata.getFileId()));
-		item.put(ORIGINAL_FILE_NAME, AttributeValue.fromS(fileMetadata.getOriginalFileName()));
-		item.put(S3_KEY, AttributeValue.fromS(fileMetadata.getS3Key()));
-		item.put(CONTENT_TYPE, AttributeValue.fromS(fileMetadata.getContentType()));
-		item.put(SIZE, AttributeValue.fromN(Long.toString(fileMetadata.getSize())));
-		item.put(UPLOAD_TIME, AttributeValue.fromS(fileMetadata.getUploadTime()));
-
-		PutItemRequest putItemRequest = PutItemRequest.builder()
-				.tableName(tableName)
-				.item(item)
-				.build();
-
-		dynamoDbClient.putItem(putItemRequest);
-	}
 
 	public Optional<FileMetadata> getFileMetadata(String fileId) {
 		Map<String, AttributeValue> key = Map.of(FILE_ID, AttributeValue.fromS(fileId));

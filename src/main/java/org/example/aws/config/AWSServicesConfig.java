@@ -10,6 +10,8 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cloudwatchlogs.CloudWatchLogsClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Configuration
 public class AWSServicesConfig {
@@ -52,6 +54,26 @@ public class AWSServicesConfig {
 	public DynamoDbClient dynamoDbClient() {
 		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
 		return DynamoDbClient.builder()
+				.region(Region.of(region))
+				.credentialsProvider(StaticCredentialsProvider.create(credentials))
+				.endpointOverride(URI.create(endpoint))
+				.build();
+	}
+
+	@Bean
+	public SnsClient snsClient() {
+		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+		return SnsClient.builder()
+				.region(Region.of(region))
+				.credentialsProvider(StaticCredentialsProvider.create(credentials))
+				.endpointOverride(URI.create(endpoint))
+				.build();
+	}
+
+	@Bean
+	public SqsClient sqsClient() {
+		AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
+		return SqsClient.builder()
 				.region(Region.of(region))
 				.credentialsProvider(StaticCredentialsProvider.create(credentials))
 				.endpointOverride(URI.create(endpoint))

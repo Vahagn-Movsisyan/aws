@@ -16,6 +16,10 @@ aws:
         name: media-log-stream
   dynamoDB:
     table-name: file_metadata
+  sns:
+    topic-name: file-topic
+  sqs:
+    queue-name: file-queue
   region: us-east-1
   access-key: LKIAQAAAAAAABZEXGME3
   secret-key: eNBA3P5SND7gTa+gGdLbVS6VnRPy/24dQx9DW4dX

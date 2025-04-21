@@ -30,12 +30,10 @@ public class CloudWatchLoggerService {
 		try {
 			cloudWatchLogsClient.createLogGroup(CreateLogGroupRequest.builder().logGroupName(logGroupName).build());
 		} catch (Exception e) {
-
 		}
 		try {
 			cloudWatchLogsClient.createLogStream(CreateLogStreamRequest.builder().logStreamName(logStreamName).build());
 		} catch (Exception e) {
-
 		}
 	}
 
